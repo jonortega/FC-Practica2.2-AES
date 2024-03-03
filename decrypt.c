@@ -117,7 +117,7 @@ void search(int64_t n_key_mask, int64_t *key_mask, int64_t n_plaintext_mask, int
 
     while (1)
     {
-        memcpy(plainTextBuffer, plain_text, BLOCK_SIZE);
+        memcpy(plainTextBuffer, plain_text, n_plaintext_mask);
 
 #ifdef AESNI
         enc_256_CBC(plainTextBuffer, plainTextBuffer, key, iv, 4);
@@ -126,11 +126,11 @@ void search(int64_t n_key_mask, int64_t *key_mask, int64_t n_plaintext_mask, int
         struct AES_ctx ctx;
         AES_init_ctx_iv(&ctx, key, iv);
         // Cifrado
-        AES_CBC_encrypt_buffer(&ctx, plainTextBuffer, BLOCK_SIZE);
+        AES_CBC_encrypt_buffer(&ctx, plainTextBuffer, n_plaintext_mask);
 #endif
 
         // Si son iguales, salir del bucle
-        if (!memcmp(cypher_text, plainTextBuffer, BLOCK_SIZE))
+        if (!memcmp(cypher_text, plainTextBuffer, n_plaintext_mask))
             break;
 
         increment_key(key, key_mask, n_key_mask);
